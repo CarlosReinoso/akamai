@@ -1,7 +1,7 @@
 const urlValidator = require("valid-url");
 const axios = require("axios");
 require("dotenv").config();
-console.log("🚀 ~ akamai ~ process.env.COOKIE:", process.env.TOKEN);
+console.log("🚀 ~ akamai ~ process.env.TOKEN:", process.env.TOKEN);
 
 const akamai = async (req, res) => {
   const urls = req.body?.urls;
@@ -24,7 +24,7 @@ const akamai = async (req, res) => {
     );
     console.log("🚀 ~ akamai ~ response:", response.data);
     console.log("sent!");
-    res.status(201).send("success");
+    res.status(201).json(response.data);
   } catch (error) {
     console.log("🚀 ~ akamai ~ error:", error);
     console.error("error:", error.message);
