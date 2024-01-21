@@ -1,69 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>URL Validator</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Validator</title>
 
-  <!-- Include Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Include Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
 
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-    }
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+      }
 
-    #urlInput {
-      min-width: 400px;
-      width: 100%;
-      box-sizing: border-box;
-      resize: vertical;
-      min-height: 330px;
-      font-family: 'Arial', sans-serif;
-    }
-  </style>
-</head>
-<body>
-  <div class="container mt-4">
-    <h1>Clear Cache</h1>
-    <form id="urlForm">
-      <label for="urlInput">Enter URLs</label>
-      <textarea type="text" id="urlInput" name="url" placeholder="http://www.example.com/test
-https://www.sslexample.com"></textarea>
-      <button type="button" class="btn btn-primary" onclick="postAkamai()">Submit</button>
-    </form>
-  </div>
+      #urlInput {
+        min-width: 400px;
+        width: 100%;
+        box-sizing: border-box;
+        resize: vertical;
+        min-height: 330px;
+        font-family: "Arial", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-4">
+      <h1>Clear Cache</h1>
+      <form id="urlForm">
+        <label for="urlInput">Enter URLs</label>
+        <textarea
+          type="text"
+          id="urlInput"
+          name="url"
+          placeholder="http://www.example.com/test
+https://www.sslexample.com"
+        ></textarea>
+        <button type="button" class="btn btn-primary" onclick="postAkamai()">
+          Submit
+        </button>
+      </form>
+    </div>
 
-  <script>
-    function isValidUrl(url) {
-      const urlRegex = /^https?:\/\//;
-      return urlRegex.test(url);
-    }
+    <script>
+      function isValidUrl(url) {
+        // const urlRegex = /^https?:\/\//;
+        const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#][^\s]*$/;
+        return urlRegex.test(url);
+      }
 
-    function postAkamai() {
-      const urls = document.getElementById('urlInput').value;
+      function postAkamai() {
+        const textareaContent = document.getElementById("urlInput").value;
 
-      if (!isValidUrl(urls)) {
-        alert('Please enter valid URLs.');
-        return;
-      } 
+        // Split the content into an array of lines
+        const objects = textareaContent
+          .split("\n")
+          .filter((line) => line.trim() !== "");
 
-      fetch('/api/akamai', {
-          method: 'POST',
+        // Check if each line is a valid URL
+        const isValid = objects.every(isValidUrl);
+
+        if (!isValid) {
+          alert(
+            "Please enter valid URLs. Check urls are not in the same line and each url is set on a seperate line"
+          );
+          return;
+        }
+
+        fetch("/api/akamai", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ urls }),
+          body: JSON.stringify({ objects }),
         })
-        .then(response => response.json())
-        .then(data => {
-          console.log("data", data);
-          alert(data.detail);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
-  </script>
-</body>
+          .then((response) => response.json())
+          .then((data) => {
+            // console.log("data", data);
+            alert(data.detail);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    </script>
+  </body>
 </html>

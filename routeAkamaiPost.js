@@ -1,17 +1,16 @@
-const urlValidator = require("valid-url");
 const axios = require("axios");
 require("dotenv").config();
-console.log("🚀 ~ akamai ~ process.env.TOKEN:", process.env.TOKEN);
 
 const akamai = async (req, res) => {
-  const urls = req.body?.urls;
-  console.log("🚀 ~ akamai ~ urls:", urls);
+  const objects = req.body?.objects;
 
   try {
+    const test = await axios.get("http://localhost:3000/api/akamai");
+    console.log("🚀 ~ akamai ~ test:", test);
     const response = await axios.post(
-      process.env.AKAMIA_URL,
+      process.env.AKAMAI_URL,
       {
-        objects: urls,
+        objects,
       },
       {
         headers: {
@@ -27,7 +26,6 @@ const akamai = async (req, res) => {
     res.status(201).json(response.data);
   } catch (error) {
     console.log("🚀 ~ akamai ~ error:", error);
-    console.error("error:", error.message);
     res.status(500).json({ status: "error", message: "Internal Server Error" });
   }
 };
