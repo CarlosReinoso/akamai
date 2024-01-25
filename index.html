@@ -129,6 +129,25 @@ https://www.sslexample.com"
         document.getElementById("loadingSpinner").style.display = "none";
         document.getElementById("submitButton").disabled = false;
       }
+
+      function showAlert(message, type) {
+        document.querySelectorAll('.custom-alert').forEach(alert => alert.remove());
+
+        const alertElement = document.createElement('div');
+        alertElement.className = `alert alert-${type} custom-alert mt-3`;
+        alertElement.textContent = message;
+
+
+        if (message.includes("Internal server error, please email your request to: ")) {
+          const mailtoLink = document.createElement('a');
+          mailtoLink.href = "mailto:ecommercepublishing@next.co.uk";
+          mailtoLink.textContent = 'ecommercepublishing@next.co.uk';
+
+          alertElement.appendChild(mailtoLink);
+        }
+
+        document.body.appendChild(alertElement);
+      }
     </script>
   </body>
 </html>
