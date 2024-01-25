@@ -5,8 +5,6 @@ const akamai = async (req, res) => {
   const objects = req.body?.objects;
 
   try {
-    const test = await axios.get("http://localhost:3000/api/akamai");
-    console.log("🚀 ~ akamai ~ test:", test);
     const response = await axios.post(
       process.env.AKAMAI_URL,
       {
@@ -22,11 +20,10 @@ const akamai = async (req, res) => {
       }
     );
     console.log("🚀 ~ akamai ~ response:", response.data);
-    console.log("sent!");
     res.status(201).json(response.data);
   } catch (error) {
     console.log("🚀 ~ akamai ~ error:", error);
-    res.status(500).json({ status: "error", message: "Internal Server Error" });
+    res.status(500).json({ httpStatus: 500, message: "Internal Server Error" });
   }
 };
 

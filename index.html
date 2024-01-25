@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>URL Validator</title>
+    <title>Clear Cache</title>
 
     <!-- Include Bootstrap CSS -->
     <link
@@ -46,7 +46,11 @@ https://www.sslexample.com"
 
     <script>
       function isValidUrl(url) {
-        // const urlRegex = /^https?:\/\//;
+        const excludedUrls = ["https://www.next.co.uk/"];
+
+        if (excludedUrls.includes(url.trim())) {
+          return false;
+        }
         const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#][^\s]*$/;
         return urlRegex.test(url);
       }
@@ -54,18 +58,14 @@ https://www.sslexample.com"
       function postAkamai() {
         const textareaContent = document.getElementById("urlInput").value;
 
-        // Split the content into an array of lines
         const objects = textareaContent
           .split("\n")
           .filter((line) => line.trim() !== "");
 
-        // Check if each line is a valid URL
         const isValid = objects.every(isValidUrl);
 
         if (!isValid) {
-          alert(
-            "Please enter valid URLs. Check urls are not in the same line and each url is set on a seperate line"
-          );
+          showAlert("Please enter valid URLs. Check that each URL is on a separate line.", "danger");
           return;
         }
 
@@ -78,12 +78,35 @@ https://www.sslexample.com"
         })
           .then((response) => response.json())
           .then((data) => {
-            // console.log("data", data);
-            alert(data.detail);
+            if (data.httpStatus == 201) {
+              showAlert(data?.detail, "success");
+            } else {
+              showAlert(`Internal server error, please email your request to: `, "danger");
+            }
           })
           .catch((error) => {
             console.error("Error:", error);
+            showAlert("Internal server error, please email your request to: ", "danger");
           });
+      }
+
+      function showAlert(message, type) {
+        document.querySelectorAll('.custom-alert').forEach(alert => alert.remove());
+
+        const alertElement = document.createElement('div');
+        alertElement.className = `alert alert-${type} custom-alert mt-3`;
+        alertElement.textContent = message;
+
+
+        if (message.includes("Internal server error, please email your request to: ")) {
+          const mailtoLink = document.createElement('a');
+          mailtoLink.href = "mailto:ecommercepublishing@next.co.uk";
+          mailtoLink.textContent = 'ecommercepublishing@next.co.uk';
+
+          alertElement.appendChild(mailtoLink);
+        }
+
+        document.body.appendChild(alertElement);
       }
     </script>
   </body>
