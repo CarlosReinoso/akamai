@@ -3,12 +3,10 @@
     "dev": "nodemon app.js"
   },
   "dependencies": {
-    "api": "^6.1.1",
     "axios": "^1.6.5",
     "body-parser": "^1.20.2",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "valid-url": "^1.0.9"
+    "express": "^4.18.2"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
