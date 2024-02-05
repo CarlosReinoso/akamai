@@ -4,8 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clear Cache</title>
-
-    <!-- Include Bootstrap CSS -->
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -25,11 +23,12 @@
         font-family: "Arial", sans-serif;
       }
     </style>
+    <script defer src="/js/main.js"></script>
   </head>
   <body>
     <div class="container mt-4">
       <h1>Clear Cache</h1>
-      <form id="urlForm">
+      <form id="form">
         <label for="urlInput">Enter URLs</label>
         <textarea
           type="text"
@@ -41,13 +40,18 @@ https://www.sslexample.com"
         <div id="loadingSpinner" class="spinner-border text-primary" role="status" style="display: none;">
           <span class="sr-only">Loading...</span>
         </div>
-        <button type="button" class="btn btn-primary" id="submitButton" onclick="postAkamai()">
+        <!-- TODO control + enter to submit -->
+        <button type="button" class="btn btn-primary" id="submitButton" onclick="postAkamai()" onkeydown="handleKeyDown(event)">
           Submit
         </button>
       </form>
     </div>
 
     <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        setupCtrlEnterSubmit("form", postAkamai)
+      });
+      
       function isValidUrl(url) {
         const excludedUrls = ["https://www.next.co.uk/"];
 
