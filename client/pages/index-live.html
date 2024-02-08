@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clear Cache</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+      }
+
+      #urlInput {
+        min-width: 400px;
+        width: 100%;
+        box-sizing: border-box;
+        resize: vertical;
+        min-height: 330px;
+        font-family: "Arial", sans-serif;
+      }
+    </style>
+    <script defer src="/js/main.js"></script>
+  </head>
+  <body>
+    <div class="container mt-4">
+      <h1>Clear Cache</h1>
+      <form id="form">
+        <label for="urlInput">Enter URLs</label>
+        <textarea
+          type="text"
+          id="urlInput"
+          name="url"
+          placeholder="http://www.example.com/test
+https://www.sslexample.com"
+        ></textarea>
+        <div id="loadingSpinner" class="spinner-border text-primary" role="status" style="display: none;">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <!-- TODO control + enter to submit -->
+        <button type="button" class="btn btn-primary" id="submitButton" onclick="postAkamai()" onkeydown="handleKeyDown(event)">
+          Submit
+        </button>
+      </form>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        setupCtrlEnterSubmit("form", postAkamai)
+      });
+      
+      function isValidUrl(url) {
+        const excludedUrls = ["https://www.next.co.uk/"];
+
+        if (excludedUrls.includes(url.trim())) {
+          return false;
+        }
+
+        const onlyOneHttps = /^(?!.*https.*https).*$/;
+        return onlyOneHttps.test(url);
+
+        const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#][^\s]*$/;
+        return urlRegex.test(url);
+      }
+
+      function postAkamai() {
+        document.getElementById("loadingSpinner").style.display = "inline-block";
+        document.getElementById("submitButton").disabled = true;
+
+        const textareaContent = document.getElementById("urlInput").value;
+
+        const objects = textareaContent
+          .split("\n")
+          .filter((line) => line.trim() !== "");
+
+        const isValid = objects.every(isValidUrl);
+
+        if (!isValid) {
+          hideLoadingElements();
+          showAlert("Please enter valid URLs. Check that each URL is on a separate line.", "danger");
+          return;
+        }
+
+        fetch("/api/akamai", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ objects }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.httpStatus == 201) {
+              showAlert(data?.detail, "success");
+              document.getElementById("urlInput").value = ''
+            } else {
+              showAlert(`Internal server error, please email your request to: `, "danger");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            showAlert("Internal server error, please email your request to: ", "danger");
+          })
+          .finally(() => {
+            hideLoadingElements();
+          });
+          
+      }
+
+      function showAlert(message, type) {
+        document.querySelectorAll('.custom-alert').forEach(alert => alert.remove());
+
+        const alertElement = document.createElement('div');
+        alertElement.className = `alert alert-${type} custom-alert mt-3`;
+        alertElement.textContent = message;
+
+
+        if (message.includes("Internal server error, please email your request to: ")) {
+          const mailtoLink = document.createElement('a');
+          mailtoLink.href = "mailto:ecommercepublishing@next.co.uk";
+          mailtoLink.textContent = 'ecommercepublishing@next.co.uk';
+
+          alertElement.appendChild(mailtoLink);
+        }
+
+        document.body.appendChild(alertElement);
+      }
+
+      function hideLoadingElements() {
+        document.getElementById("loadingSpinner").style.display = "none";
+        document.getElementById("submitButton").disabled = false;
+      }
+
+      function showAlert(message, type) {
+        document.querySelectorAll('.custom-alert').forEach(alert => alert.remove());
+
+        const alertElement = document.createElement('div');
+        alertElement.className = `alert alert-${type} custom-alert mt-3`;
+        alertElement.textContent = message;
+
+
+        if (message.includes("Internal server error, please email your request to: ")) {
+          const mailtoLink = document.createElement('a');
+          mailtoLink.href = "mailto:ecommercepublishing@next.co.uk";
+          mailtoLink.textContent = 'ecommercepublishing@next.co.uk';
+
+          alertElement.appendChild(mailtoLink);
+        }
+
+        document.body.appendChild(alertElement);
+      }
+    </script>
+  </body>
+</html>
