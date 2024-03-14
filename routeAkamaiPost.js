@@ -1,14 +1,22 @@
-const axios = require("axios");
 require("dotenv").config();
+const axios = require("axios");
+console.log("🚀 ~ akamai ~ process.env.COOKIE:", process.env.COOKIE)
+console.log("🚀 ~ akamai ~ process.env.TOKEN:", process.env.TOKEN)
+
 
 const akamai = async (req, res) => {
   const objects = req.body?.objects;
+  console.log("🚀 ~ akamai ~ objects:", objects)
 
   try {
     const response = await axios.post(
-      process.env.AKAMAI_URL,
+      "https://control.akamai.com/portal-ccu-api/services/v1/delete/urls/production",
       {
-        objects,
+        objects: [
+          "https://xcdn.next.co.uk/Common/Items/Default/Default/ItemImages/Search/676/D69295.jpg?im=Resize,width=350?lll",
+          "https://xcdn.next.co.uk/Common/Items/Default/Default/ItemImages/Search/676/798871.jpg?im=Resize,width=350?kkj",
+          "https://xcdn.next.co.uk/Common/Items/Default/Default/ItemImages/Search/676/T14951.jpg?im=Resize,width=350?kkk"
+        ]
       },
       {
         headers: {
@@ -16,6 +24,11 @@ const akamai = async (req, res) => {
           "Content-Type": "application/json",
           Cookie: process.env.COOKIE,
           "X-Xsrf-Token": process.env.TOKEN,
+          "User-Agent": "PostmanRuntime/7.26.8",
+          Host: "control.akamai.com",
+          "Accept-Encoding": "gzip, deflate, br",
+          Connection: "keep-alive",
+          "Content-Length": 270
         },
       }
     );

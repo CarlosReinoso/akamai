@@ -1,0 +1,5 @@
+Validate incoming objects
+send comprehensive errors
+bat should use txt file - have validation there? - use powershell instead?
+Do you want to log the user that sent request and keep them for 6 months? - no cant no shared space, only for content team. (you can setting up a database, no)
+Make a doc and share the exe via zip file
