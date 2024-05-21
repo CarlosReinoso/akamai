@@ -1,7 +1,6 @@
 function isValidUrl(urls) {
 
   const parsedUrls = JSON.parse(urls)
-    console.log("🚀 ~ isValidUrl ~ url:----------", typeof urls)
     const excludedUrls = ["https://www.next.co.uk/"];
 
 
@@ -19,7 +18,6 @@ function isValidUrl(urls) {
       }
     }
     return true;
-    return onlyOneHttps.test(url);
   }
 
 

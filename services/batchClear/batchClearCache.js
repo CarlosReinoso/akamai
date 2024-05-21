@@ -33,7 +33,7 @@ const processFile = async (filePath) => {
     batch.push(line.trim());
     totalCount++;
 
-    if (batch.length >= 1500) { 
+    if (batch.length >= 1750) { 
       await sendBatchAkamaiUrls(batch);
       console.log("Batch sent with item:", totalCount);
       // Reset batch
