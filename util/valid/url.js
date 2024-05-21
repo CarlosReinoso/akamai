@@ -11,9 +11,7 @@ function isValidUrl(urls) {
     const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#][^\s]*$/;
     
     for (const url of parsedUrls) {
-      console.log("🚀 ~ isValidUrl ~ url:", url)
       if (!urlRegex.test(url)) {
-        console.log("🚀 ~ isValidUrl ~ !urlRegex.test(url):", !urlRegex.test(url))
         return false;
       }
     }

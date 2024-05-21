@@ -8,6 +8,7 @@ const directoryPath = 'C:/Users/CREINOSO/Documents/projects/akamai/services/batc
 
 // Function to send batch of URLs to Akamai
 const sendBatchAkamaiUrls = async (batch) => {
+  console.log("🚀 ~ sendBatchAkamaiUrls ~ batch:", batch);
   try {
     const response = await axios.post('http://localhost:3000/api/akamai', {
       "objects": JSON.stringify(batch)
@@ -16,6 +17,9 @@ const sendBatchAkamaiUrls = async (batch) => {
     console.log("🚀 ~ akamai ~ error:", error);
   }
 };
+
+// Function to introduce a delay
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 // Function to process a single file
 const processFile = async (filePath) => {
@@ -27,23 +31,27 @@ const processFile = async (filePath) => {
 
   let batch = [];
   let totalCount = 0;
+  const maxBatchSize = 1000;
+  const requestTimeout = 2000 // 2 seconds
 
   for await (const line of objectsReader) {
     // Assuming each line in the file contains a URL
     batch.push(line.trim());
     totalCount++;
 
-    if (batch.length >= 1750) { 
+    if (batch.length >= maxBatchSize) { 
       await sendBatchAkamaiUrls(batch);
       console.log("Batch sent with item:", totalCount);
       // Reset batch
       batch = [];
+      await delay(requestTimeout);
     }
   }
 
   // Send the remaining items if any
   if (batch.length > 0) {
     await sendBatchAkamaiUrls(batch);
+    await delay(requestTimeout);  
   }
 
   console.log(`Total items processed in file ${filePath}: ${totalCount}`);
