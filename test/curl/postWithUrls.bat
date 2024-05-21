@@ -5,5 +5,7 @@ curl -X POST "http://localhost:3000/api/akamai" ^
 -H "content-type: application/json" ^
 -d "{\"objects\":[\"https://xcdn.next.co.uk/common/items/default/default/itemimages/altitemzoom/762695s2.jpg?im=Resize,width=364\",\"https://xcdn.next.co.uk/common/items/default/default/itemimages/altitemzoom/762695s2.jpg?im=Resize,width=364\"]}"
 
+echo
+
 pause
 
