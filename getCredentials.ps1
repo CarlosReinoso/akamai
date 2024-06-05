@@ -21,4 +21,5 @@ $updatedEnvContent = $envContent -replace 'COOKIE=".*"', "COOKIE=`"$cookieLine`"
 # Write the updated content back to the .env file
 Set-Content -Path $envFilePath -Value $updatedEnvContent
 
-Read-Host "Press Enter to exit..."
+# Running pnpm run dev in WSL
+wsl bash -c "cd /mnt/c/Users/CREINOSO/Documents/projects/akamai && pnpm run dev"
